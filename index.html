@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Java Functions — Interactive Guide</title>
+  <style>
+    :root {
+      --bg:#0f1117;--card:#1a1d27;--border:#2a2d3e;
+      --accent:#7c6af7;--accent2:#3ecfcf;--text:#e2e8f0;--muted:#8892a4;
+      --green:#4ade80;--orange:#fb923c;--pink:#f472b6;--yellow:#facc15;
+      --red:#f87171;--blue:#60a5fa;--demo-bg:#11141e;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:24px 16px 60px}
+    header{text-align:center;padding:36px 0 28px}
+    header h1{font-size:2.3rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    header p{color:var(--muted);margin-top:8px}
+    .search-wrap{max-width:480px;margin:0 auto 28px;position:relative}
+    .search-wrap input{width:100%;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:11px 16px 11px 40px;color:var(--text);font-size:.95rem;outline:none;transition:border-color .2s}
+    .search-wrap input:focus{border-color:var(--accent)}
+    .search-wrap .ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
+    .tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:32px}
+    .tab-btn{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:7px 17px;border-radius:24px;cursor:pointer;font-size:.87rem;transition:all .2s}
+    .tab-btn:hover{border-color:var(--accent);color:var(--text)}
+    .tab-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:22px;max-width:1240px;margin:0 auto}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s}
+    .card:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(124,106,247,.15)}
+    .card.hidden{display:none}
+    .card-header{padding:14px 16px 11px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:9px}
+    .badge{font-size:.7rem;padding:3px 8px;border-radius:6px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+    .badge-strings{background:#1a3a5c;color:var(--accent2)}
+    .badge-arrays{background:#1e3a1e;color:var(--green)}
+    .badge-loops{background:#3a2a1a;color:var(--orange)}
+    .badge-math{background:#3a1a2a;color:var(--pink)}
+    .badge-oop{background:#2a2a1a;color:var(--yellow)}
+    .badge-collections{background:#1a2a3a;color:var(--blue)}
+    .card-header h3{font-size:.95rem;font-weight:700;flex:1}
+    .card-body{padding:13px 16px 14px}
+    .card-body > p{font-size:.87rem;color:var(--muted);line-height:1.6;margin-bottom:11px}
+    pre{background:#0a0c14;border:1px solid var(--border);border-radius:8px;padding:12px 14px;overflow-x:auto;font-size:.79rem;line-height:1.7;position:relative;margin-bottom:12px}
+    code{font-family:'Cascadia Code','Fira Code','Consolas',monospace}
+    .copy-btn{position:absolute;top:7px;right:7px;background:var(--border);border:none;color:var(--muted);padding:3px 9px;border-radius:5px;cursor:pointer;font-size:.72rem;transition:all .2s}
+    .copy-btn:hover{background:var(--accent);color:#fff}
+    .copy-btn.copied{background:var(--green);color:#000}
+    .kw{color:#c792ea}.type{color:#82aaff}.fn{color:#82cfff}.str{color:#c3e88d}.num{color:#f78c6c}.cm{color:#546e7a;font-style:italic}.cls{color:var(--yellow)}.ann{color:var(--orange)}
+    /* demo panel */
+    .demo{background:var(--demo-bg);border:1px solid #1e2235;border-radius:10px;padding:13px 14px 14px}
+    .demo-title{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--accent2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .demo-title::before{content:'▶';font-size:.65rem}
+    .demo label{display:block;font-size:.76rem;color:var(--muted);margin-bottom:3px;margin-top:8px}
+    .demo label:first-of-type{margin-top:0}
+    .demo input[type=text],.demo input[type=number]{background:#1a1d27;border:1px solid var(--border);border-radius:6px;color:var(--text);padding:6px 10px;font-size:.82rem;width:100%;outline:none;transition:border-color .2s;font-family:'Cascadia Code','Consolas',monospace}
+    .demo input[type=text]:focus,.demo input[type=number]:focus{border-color:var(--accent)}
+    .demo input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
+    .demo-row{display:flex;gap:8px;align-items:flex-end}
+    .demo-row > *{flex:1}
+    .demo-btn{background:var(--accent);border:none;color:#fff;padding:7px 14px;border-radius:7px;cursor:pointer;font-size:.8rem;font-weight:600;transition:all .18s;white-space:nowrap;flex-shrink:0}
+    .demo-btn:hover{background:#9580ff}
+    .demo-btn.secondary{background:#2a2d3e;color:var(--text)}
+    .demo-btn.secondary:hover{background:#3a3d50}
+    .demo-out{margin-top:10px;background:#0a0c14;border:1px solid var(--border);border-radius:7px;padding:10px 12px;font-family:'Cascadia Code','Consolas',monospace;font-size:.8rem;min-height:32px;white-space:pre-wrap;word-break:break-all}
+    /* char boxes */
+    .char-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+    .char-box{display:inline-flex;flex-direction:column;align-items:center;min-width:26px;padding:2px 4px;background:#1a1d27;border:1px solid var(--border);border-radius:5px;font-family:monospace;font-size:.78rem}
+    .char-box .ch{color:var(--text);font-weight:600}
+    .char-box .idx{color:var(--muted);font-size:.6rem}
+    .char-box.hl{background:#2a1a4a;border-color:var(--accent)}
+    .char-box.hl .ch{color:var(--accent2)}
+    .char-box.match{background:#1a3a1a;border-color:var(--green)}
+    .char-box.match .ch{color:var(--green)}
+    .char-box.space{background:#1a1a2a;border-color:#333}
+    .char-box.space .ch{color:#3a4a6a}
+    .char-box.trimmed{background:transparent;border-color:#222;opacity:.35}
+    .char-box.changed{background:#2a1a0a;border-color:var(--orange)}
+    .char-box.changed .ch{color:var(--orange)}
+    /* array boxes */
+    .arr-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+    .arr-box{display:flex;flex-direction:column;align-items:center;min-width:38px;padding:4px 6px;background:#1a1d27;border:1px solid var(--border);border-radius:6px;font-family:monospace;font-size:.85rem;transition:all .3s}
+    .arr-box .val{color:var(--text);font-weight:600}
+    .arr-box .idx{color:var(--muted);font-size:.6rem}
+    .arr-box.hl{background:#1a3a1a;border-color:var(--green)}
+    .arr-box.hl .val{color:var(--green)}
+    .arr-box.hl2{background:#2a1a4a;border-color:var(--accent)}
+    .arr-box.hl2 .val{color:var(--accent2)}
+    .arr-box.filled{background:#2a1a0a;border-color:var(--orange)}
+    .arr-box.filled .val{color:var(--orange)}
+    .arr-box.done{background:#1a2a1a;border-color:#2a4a2a}
+    .arr-box.done .val{color:var(--green);opacity:.7}
+    /* chips */
+    .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+    .chip{display:inline-flex;align-items:center;gap:5px;background:#1a3a1a;border:1px solid var(--green);color:var(--green);border-radius:6px;padding:3px 10px;font-size:.8rem;font-family:monospace}
+    .chip .chip-i{color:var(--muted);font-size:.7rem}
+    /* kv pairs */
+    .kv-pair{display:flex;align-items:center;gap:6px;background:#1a1d27;border:1px solid var(--border);border-radius:7px;padding:6px 10px;margin-top:5px;font-size:.82rem;transition:all .2s}
+    .kv-pair.new-item{border-color:var(--green);background:#1a2a1a;animation:flash .5s}
+    .kv-pair.dup-item{border-color:var(--red);background:#2a1a1a;animation:shake .3s}
+    .kv-key{color:var(--accent2);font-family:monospace;font-weight:600}
+    .kv-arrow{color:var(--muted)}
+    .kv-val{color:var(--orange);font-family:monospace}
+    .kv-rm{margin-left:auto;background:none;border:none;color:var(--muted);cursor:pointer;font-size:.9rem;padding:0 2px}
+    .kv-rm:hover{color:var(--red)}
+    /* loop */
+    .loop-display{background:#0a0c14;border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-top:8px;font-family:monospace;font-size:.82rem}
+    .loop-var{display:inline-flex;align-items:center;gap:6px;background:#1a1d27;border:1px solid var(--border);border-radius:6px;padding:3px 10px;margin-bottom:6px}
+    .loop-var-val{color:var(--orange);font-weight:700;font-size:1rem}
+    .loop-output{color:var(--green);white-space:pre-wrap;margin-top:4px}
+    .loop-active{color:var(--yellow);font-weight:600;font-size:.85rem}
+    .iter-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+    .iter-box{min-width:28px;padding:3px 6px;background:#1a1d27;border:1px solid var(--border);border-radius:5px;font-family:monospace;font-size:.8rem;color:var(--muted);text-align:center;transition:all .25s}
+    .iter-box.done{background:#1a2a1a;border-color:var(--green);color:var(--green)}
+    .iter-box.current{background:#2a1a4a;border-color:var(--accent);color:var(--accent2);transform:scale(1.15)}
+    .iter-box.skipped{opacity:.35;text-decoration:line-through;color:var(--red)}
+    /* oop */
+    .obj-card{background:#0a0c14;border:2px solid var(--border);border-radius:10px;padding:10px 14px;margin-top:8px;font-family:monospace;font-size:.8rem;transition:border-color .3s}
+    .obj-title{font-weight:700;color:var(--yellow);margin-bottom:8px;font-size:.85rem}
+    .obj-field{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)}
+    .obj-field:last-child{border-bottom:none}
+    .obj-field-name{color:var(--accent2)}
+    .obj-field-value{color:var(--orange)}
+    .obj-card.created{border-color:var(--green)}
+    .class-tree{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:8px;font-size:.8rem;font-family:monospace}
+    .ct-node{background:#1a1d27;border:1px solid var(--border);border-radius:7px;padding:6px 14px;text-align:center;color:var(--yellow);font-weight:700}
+    .ct-node.interface{color:var(--blue);border-color:#1a3a5a;background:#1a1a2a}
+    .ct-arrow{color:var(--muted);font-size:.75rem;margin:2px 0}
+    .ct-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .badge-true{background:#1a3a1a;color:var(--green);border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700}
+    .badge-false{background:#3a1a1a;color:var(--red);border-radius:6px;padding:3px 10px;font-size:.8rem;font-weight:700}
+    .dice-face{font-size:2.8rem;line-height:1;margin-top:6px;display:inline-block;transition:transform .15s}
+    .number-line{position:relative;height:36px;margin-top:10px}
+    .nl-track{position:absolute;top:50%;left:0;right:0;height:2px;background:var(--border);transform:translateY(-50%);border-radius:1px}
+    .nl-tick{position:absolute;top:50%;width:1px;height:10px;background:var(--muted);transform:translate(-50%,-50%)}
+    .nl-label{position:absolute;top:calc(50% + 8px);transform:translateX(-50%);font-size:.62rem;color:var(--muted);font-family:monospace}
+    .nl-dot{position:absolute;top:50%;width:12px;height:12px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);transition:left .2s;z-index:2}
+    .nl-result-dot{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;transform:translate(-50%,-50%);transition:left .2s;z-index:2}
+    @keyframes flash{0%{background:#2a4a2a}100%{}}
+    @keyframes shake{0%,100%{transform:none}25%,75%{transform:translateX(-4px)}50%{transform:translateX(4px)}}
+    .empty-state{text-align:center;color:var(--muted);padding:60px 0;display:none;grid-column:1/-1}
+    .empty-state.visible{display:block}
+    footer{text-align:center;color:var(--muted);font-size:.78rem;margin-top:44px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>&#9749; Java Functions — Beginner Guide</h1>
+  <p>Never coded before? No problem. Each card below explains one Java concept in plain English, shows you real code, and lets you <strong style="color:var(--accent2)">type your own input and see what happens live</strong>. Just read, play, and learn at your own pace!</p>
+</header>
+
+<div style="max-width:780px;margin:0 auto 28px;background:#1a1d27;border:1px solid #2d3a5c;border-radius:12px;padding:16px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+  <div style="display:flex;gap:10px;align-items:flex-start">
+    <span style="font-size:1.4rem;flex-shrink:0">&#128196;</span>
+    <div><strong style="color:var(--accent2);font-size:.82rem">Variable</strong><p style="color:var(--muted);font-size:.78rem;margin-top:3px;line-height:1.5">A named box that holds a value. <code>int age = 5;</code></p></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start">
+    <span style="font-size:1.4rem;flex-shrink:0">&#128204;</span>
+    <div><strong style="color:var(--accent2);font-size:.82rem">Method / Function</strong><p style="color:var(--muted);font-size:.78rem;margin-top:3px;line-height:1.5">A reusable block of code you can call by name.</p></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start">
+    <span style="font-size:1.4rem;flex-shrink:0">&#128196;</span>
+    <div><strong style="color:var(--accent2);font-size:.82rem">String</strong><p style="color:var(--muted);font-size:.78rem;margin-top:3px;line-height:1.5">Text in Java. Always in double quotes: <code>"Hello"</code></p></div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:flex-start">
+    <span style="font-size:1.4rem;flex-shrink:0">&#128296;</span>
+    <div><strong style="color:var(--accent2);font-size:.82rem">boolean</strong><p style="color:var(--muted);font-size:.78rem;margin-top:3px;line-height:1.5">Only two values: <code>true</code> or <code>false</code>. Yes or no.</p></div>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <span class="ico">&#128269;</span>
+  <input id="search" placeholder="Search functions&hellip;" oninput="filterCards()" />
+</div>
+<div class="tabs">
+  <button class="tab-btn active" onclick="setTab('all',this)">All</button>
+  <button class="tab-btn" onclick="setTab('strings',this)">Strings</button>
+  <button class="tab-btn" onclick="setTab('arrays',this)">Arrays</button>
+  <button class="tab-btn" onclick="setTab('loops',this)">Loops</button>
+  <button class="tab-btn" onclick="setTab('math',this)">Math</button>
+  <button class="tab-btn" onclick="setTab('oop',this)">OOP</button>
+  <button class="tab-btn" onclick="setTab('collections',this)">Collections</button>
+</div>
+<div class="grid" id="grid">
+
+<!-- ========== STRINGS ========== -->
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>String.length()</h3></div>
+  <div class="card-body">
+    <p>Counts how many characters are in a piece of text — like counting letters on a name tag. Spaces, punctuation, and numbers all count too! Useful for checking if a user actually typed something, or for enforcing a password length limit.</p>
+    <pre><code><span class="type">String</span> s = <span class="str">"Hello!"</span>;          <span class="cm">// declare a variable called s</span>
+<span class="kw">int</span> n = s.<span class="fn">length</span>();       <span class="cm">// n = 6  (H-e-l-l-o-!)</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; each box is one character</div>
+      <label>String</label>
+      <input type="text" id="len-in" value="Hello, Java!" oninput="demoLength()" />
+      <div class="char-row" id="len-boxes"></div>
+      <div class="demo-out" id="len-out"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>toUpperCase() / toLowerCase()</h3></div>
+  <div class="card-body">
+    <p>Converts all letters to CAPITALS or all to lowercase — like holding Shift on every letter at once. Useful when you want to compare two words without caring about capitalization (e.g. "hello" and "HELLO" should both pass a search). The original string is never changed; you get a brand-new one back.</p>
+    <pre><code><span class="str">"Hello"</span>.<span class="fn">toUpperCase</span>() <span class="cm">// &rarr; "HELLO"</span>
+<span class="str">"Hello"</span>.<span class="fn">toLowerCase</span>() <span class="cm">// &rarr; "hello"</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it</div>
+      <label>String</label>
+      <input type="text" id="case-in" value="Hello World 123!" oninput="demoCase()" />
+      <label>toUpperCase() &mdash; orange = changed</label>
+      <div class="char-row" id="case-upper"></div>
+      <label>toLowerCase() &mdash; orange = changed</label>
+      <div class="char-row" id="case-lower"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>String.substring()</h3></div>
+  <div class="card-body">
+    <p>Cuts out a piece of text between two positions — like using scissors on a sentence. The <code>start</code> position IS included; the <code>end</code> position is NOT. So <code>substring(0, 3)</code> gives you positions 0, 1, and 2. The purple boxes below show exactly which characters you'll get.</p>
+    <pre><code><span class="str">"Java is fun"</span>.<span class="fn">substring</span>(<span class="num">0</span>, <span class="num">4</span>)  <span class="cm">// &rarr; "Java"</span>
+<span class="str">"Java is fun"</span>.<span class="fn">substring</span>(<span class="num">5</span>)     <span class="cm">// &rarr; "is fun"</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; purple = selected range</div>
+      <label>String</label>
+      <input type="text" id="sub-str" value="Java is fun!" oninput="demoSub()" />
+      <div class="demo-row" style="margin-top:6px">
+        <div><label>start (inclusive)</label><input type="number" id="sub-s" value="0" min="0" oninput="demoSub()" /></div>
+        <div><label>end (-1 = to end)</label><input type="number" id="sub-e" value="4" oninput="demoSub()" /></div>
+      </div>
+      <div class="char-row" id="sub-boxes"></div>
+      <div class="demo-out" id="sub-out"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>contains() / startsWith() / endsWith()</h3></div>
+  <div class="card-body">
+    <p>Asks a yes/no question about your text — does it contain this word? Does it start or end with this? The answer is always <code>true</code> or <code>false</code>. Great for things like: "does this email contain an @?" or "does the filename end in .jpg?". Green boxes show where the match was found.</p>
+    <pre><code><span class="str">"Hello Java"</span>.<span class="fn">contains</span>(<span class="str">"Java"</span>)     <span class="cm">// true</span>
+<span class="str">"Hello Java"</span>.<span class="fn">startsWith</span>(<span class="str">"Hello"</span>) <span class="cm">// true</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; green = match found</div>
+      <label>String</label>
+      <input type="text" id="cse-str" value="Hello, Java World!" oninput="demoCse()" />
+      <label>Search for</label>
+      <input type="text" id="cse-q" value="Java" oninput="demoCse()" />
+      <div class="char-row" id="cse-boxes" style="margin-top:8px"></div>
+      <div id="cse-results" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>replace()</h3></div>
+  <div class="card-body">
+    <p>Finds every copy of a word (or character) and swaps it out — just like Find &amp; Replace in Word. It replaces ALL matches at once, not just the first one. Great for cleaning up text, removing unwanted characters, or reformatting output. The original string is never changed; you always get a new one.</p>
+    <pre><code><span class="str">"I love cats"</span>.<span class="fn">replace</span>(<span class="str">"cats"</span>, <span class="str">"dogs"</span>)
+<span class="cm">// &rarr; "I love dogs"</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; orange = will be replaced</div>
+      <label>Original string</label>
+      <input type="text" id="rep-str" value="I love cats and more cats" oninput="demoReplace()" />
+      <div class="demo-row">
+        <div><label>Find</label><input type="text" id="rep-find" value="cats" oninput="demoReplace()" /></div>
+        <div><label>Replace with</label><input type="text" id="rep-with" value="dogs" oninput="demoReplace()" /></div>
+      </div>
+      <div class="char-row" id="rep-boxes" style="margin-top:8px"></div>
+      <div class="demo-out" id="rep-out" style="margin-top:6px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>String.split()</h3></div>
+  <div class="card-body">
+    <p>Chops a string into pieces every time it finds a certain character (like a comma or space). The result is an array of separate strings. Think of it like cutting a CSV row — <code>"apple,banana,cherry"</code> split by <code>","</code> gives you three separate words. Very common when reading data files.</p>
+    <pre><code><span class="str">"a,b,c"</span>.<span class="fn">split</span>(<span class="str">","</span>) <span class="cm">// &rarr; ["a","b","c"]</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; change the delimiter</div>
+      <label>String</label>
+      <input type="text" id="spl-str" value="apple,banana,cherry,mango" oninput="demoSplit()" />
+      <label>Delimiter</label>
+      <input type="text" id="spl-del" value="," style="max-width:80px" oninput="demoSplit()" />
+      <div class="chip-row" id="spl-out"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>trim() &amp; strip()</h3></div>
+  <div class="card-body">
+    <p>Cleans up invisible spaces at the start and end of text — the kind users accidentally leave when typing in a form. Spaces in the <em>middle</em> are left alone. Always trim user input before checking or saving it, or you'll get bugs that are very hard to spot! Dim boxes = stripped spaces.</p>
+    <pre><code><span class="str">"  Hello!  "</span>.<span class="fn">strip</span>() <span class="cm">// &rarr; "Hello!"</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; add spaces around the text</div>
+      <label>String (add leading/trailing spaces)</label>
+      <input type="text" id="trim-in" value="   Hello, Java!   " oninput="demoTrim()" />
+      <label>Original &mdash; dim = will be removed</label>
+      <div class="char-row" id="trim-orig"></div>
+      <label>After strip()</label>
+      <div class="char-row" id="trim-after"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="strings">
+  <div class="card-header"><span class="badge badge-strings">Strings</span><h3>equals() vs ==</h3></div>
+  <div class="card-body">
+    <p>The correct way to check if two strings have the same text. <strong>Never use <code>==</code> for strings</strong> — <code>==</code> checks if two variables point to the exact same place in memory, which can give a wrong <code>false</code> even when the words look identical. <code>.equals()</code> compares the actual letters.</p>
+    <pre><code>a.<span class="fn">equals</span>(b)           <span class="cm">// content equal?</span>
+a.<span class="fn">equalsIgnoreCase</span>(b) <span class="cm">// case-insensitive?</span>
+a == b               <span class="cm">// same object? (usually false)</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; compare two strings</div>
+      <div class="demo-row">
+        <div><label>String a</label><input type="text" id="eq-a" value="Hello" oninput="demoEquals()" /></div>
+        <div><label>String b</label><input type="text" id="eq-b" value="hello" oninput="demoEquals()" /></div>
+      </div>
+      <div id="eq-results" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ARRAYS ========== -->
+
+<div class="card" data-cat="arrays">
+  <div class="card-header"><span class="badge badge-arrays">Arrays</span><h3>Declaring &amp; Accessing</h3></div>
+  <div class="card-body">
+    <p>An array is like a row of numbered boxes — each box holds one value. The numbering always starts at <strong>0</strong>, not 1. So the first item is at index 0, the second at index 1, and so on. ⚠️ Asking for a box that doesn't exist (e.g. index 10 in a 5-item array) causes a crash called <code>ArrayIndexOutOfBoundsException</code>.</p>
+    <pre><code><span class="cm">//  index:    0  1  2  3   &larr; always starts at 0!</span>
+<span class="kw">int</span>[] nums = { <span class="num">5</span>, <span class="num">3</span>, <span class="num">8</span>, <span class="num">1</span> };
+nums[<span class="num">0</span>];      <span class="cm">// &rarr; 5  (first item)</span>
+nums[<span class="num">2</span>];      <span class="cm">// &rarr; 8  (third item)</span>
+nums.length; <span class="cm">// &rarr; 4  (total boxes)</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; change the index</div>
+      <label>Array (comma-separated)</label>
+      <input type="text" id="arr-in" value="5, 3, 8, 1, 9, 2" oninput="demoArr()" />
+      <label>Access index</label>
+      <input type="number" id="arr-idx" value="2" min="0" oninput="demoArr()" />
+      <div class="arr-row" id="arr-boxes"></div>
+      <div class="demo-out" id="arr-out"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="arrays">
+  <div class="card-header"><span class="badge badge-arrays">Arrays</span><h3>Arrays.sort()</h3></div>
+  <div class="card-body">
+    <p>Puts the elements in order from smallest to largest — directly inside the same array (no copy made). Works on numbers and on text (alphabetical order). ⚠️ The original order is gone after sorting — if you need to keep it, copy the array first. Click Sort below to watch the boxes rearrange!</p>
+    <pre><code><span class="kw">import</span> java.util.<span class="cls">Arrays</span>;
+<span class="kw">int</span>[] a = { <span class="num">5</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">2</span> };
+<span class="cls">Arrays</span>.<span class="fn">sort</span>(a); <span class="cm">// a is now [1, 2, 4, 5]</span>
+<span class="cm">// ⚠️ a's original order is gone forever!</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; watch the boxes reorder</div>
+      <label>Array values</label>
+      <input type="text" id="sort-in" value="5, 1, 4, 2, 9, 3" oninput="demoSortInit()" />
+      <div class="arr-row" id="sort-boxes"></div>
+      <div class="demo-row" style="margin-top:10px">
+        <button class="demo-btn" onclick="demoSortRun()">Arrays.sort()</button>
+        <button class="demo-btn secondary" onclick="demoSortShuffle()">Shuffle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="arrays">
+  <div class="card-header"><span class="badge badge-arrays">Arrays</span><h3>Arrays.copyOfRange()</h3></div>
+  <div class="card-body">
+    <p>Makes a brand-new array that contains just a piece of an existing one — the original array is NOT changed. Think of it like photocopying only a specific page range. Blue boxes show which part of the original is selected; green boxes show the fresh copy you get.</p>
+    <pre><code><span class="kw">int</span>[] orig = { <span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>,<span class="num">5</span> };
+<span class="cls">Arrays</span>.<span class="fn">copyOfRange</span>(orig, <span class="num">1</span>, <span class="num">4</span>);
+<span class="cm">// &rarr; [2, 3, 4]</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; blue = source range, green = copy</div>
+      <label>Array</label>
+      <input type="text" id="cop-arr" value="10, 20, 30, 40, 50, 60" oninput="demoCopy()" />
+      <div class="demo-row">
+        <div><label>from (inclusive)</label><input type="number" id="cop-s" value="1" min="0" oninput="demoCopy()" /></div>
+        <div><label>to (exclusive)</label><input type="number" id="cop-e" value="4" min="0" oninput="demoCopy()" /></div>
+      </div>
+      <label>Original</label><div class="arr-row" id="cop-orig"></div>
+      <label>Copy</label><div class="arr-row" id="cop-copy"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="arrays">
+  <div class="card-header"><span class="badge badge-arrays">Arrays</span><h3>Arrays.fill()</h3></div>
+  <div class="card-body">
+    <p>Fills every slot (or just a section) of an array with the same value — like painting a row of boxes one color. Great for quickly resetting an array or pre-loading it with a default value like <code>0</code> or <code>-1</code> before you fill it with real data. Orange boxes show which slots get filled.</p>
+    <pre><code><span class="kw">int</span>[] a = <span class="kw">new</span> <span class="kw">int</span>[<span class="num">6</span>];
+<span class="cls">Arrays</span>.<span class="fn">fill</span>(a, <span class="num">7</span>); <span class="cm">// [7,7,7,7,7,7]</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; orange = filled</div>
+      <div class="demo-row">
+        <div><label>Array length</label><input type="number" id="fil-len" value="6" min="1" max="12" oninput="demoFill()" /></div>
+        <div><label>Fill value</label><input type="number" id="fil-val" value="7" oninput="demoFill()" /></div>
+      </div>
+      <div class="demo-row">
+        <div><label>from index (0 = all)</label><input type="number" id="fil-s" value="0" min="0" oninput="demoFill()" /></div>
+        <div><label>to index (-1 = all)</label><input type="number" id="fil-e" value="-1" oninput="demoFill()" /></div>
+      </div>
+      <div class="arr-row" id="fil-boxes"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LOOPS ========== -->
+
+<div class="card" data-cat="loops">
+  <div class="card-header"><span class="badge badge-loops">Loops</span><h3>for loop</h3></div>
+  <div class="card-body">
+    <p>The most common loop — runs a block of code a set number of times. You pick the start number, the end number, and how much to count by each step. Think of <code>i</code> as a counter that keeps going until it hits the limit. Hit ▶ Next below to step through it one round at a time!</p>
+    <pre><code><span class="cm">// i starts at 0, counts up by 1 while i &lt; 5</span>
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; <span class="num">5</span>; i++) {
+    <span class="cls">System</span>.out.<span class="fn">println</span>(i); <span class="cm">// prints 0, 1, 2, 3, 4</span>
+}</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Step through it</div>
+      <div class="demo-row">
+        <div><label>start</label><input type="number" id="fl-s" value="0" oninput="forLoopInit()" /></div>
+        <div><label>end (&lt;)</label><input type="number" id="fl-e" value="8" oninput="forLoopInit()" /></div>
+        <div><label>step</label><input type="number" id="fl-st" value="1" min="1" oninput="forLoopInit()" /></div>
+      </div>
+      <div class="iter-row" id="fl-iters"></div>
+      <div class="loop-display">
+        <div class="loop-var">i&nbsp;=&nbsp;<span class="loop-var-val" id="fl-ival">&mdash;</span></div>
+        <div class="loop-active" id="fl-status">Press Next to start</div>
+        <div class="loop-output" id="fl-output"></div>
+      </div>
+      <div class="demo-row" style="margin-top:8px">
+        <button class="demo-btn" id="fl-next" onclick="forLoopStep()">&#9654; Next</button>
+        <button class="demo-btn secondary" onclick="forLoopInit()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="loops">
+  <div class="card-header"><span class="badge badge-loops">Loops</span><h3>Enhanced for-each</h3></div>
+  <div class="card-body">
+    <p>A simpler loop for visiting every item in a list or array — one by one. You don't need an index counter; Java handles that automatically. Use this when you want to do something with each item and don't need to know its position number. The blue box is the item being visited right now.</p>
+    <pre><code><span class="type">String</span>[] fruits = {<span class="str">"apple"</span>, <span class="str">"banana"</span>, <span class="str">"cherry"</span>};
+
+<span class="cm">// "for each fruit in the fruits array"</span>
+<span class="kw">for</span> (<span class="type">String</span> fruit : fruits) {
+    <span class="cls">System</span>.out.<span class="fn">println</span>(fruit); <span class="cm">// prints each one</span>
+}</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Step through it</div>
+      <label>Array items (comma-separated)</label>
+      <input type="text" id="fe-arr" value="red, green, blue, yellow" oninput="feInit()" />
+      <div class="arr-row" id="fe-boxes"></div>
+      <div class="loop-display">
+        <div class="loop-var">item&nbsp;=&nbsp;<span class="loop-var-val" id="fe-val">&mdash;</span></div>
+        <div class="loop-output" id="fe-output"></div>
+      </div>
+      <div class="demo-row" style="margin-top:8px">
+        <button class="demo-btn" onclick="feStep()">&#9654; Next</button>
+        <button class="demo-btn secondary" onclick="feInit()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="loops">
+  <div class="card-header"><span class="badge badge-loops">Loops</span><h3>break &amp; continue</h3></div>
+  <div class="card-body">
+    <p><code>break</code> is an emergency exit — the moment Java hits it, the loop ends immediately. <code>continue</code> is a skip — it jumps straight to the next round without running the rest of the loop body for that step. Watch some numbers get skipped (struck through) and one stop the whole loop dead.</p>
+    <pre><code><span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; <span class="num">10</span>; i++) {
+    <span class="kw">if</span> (i == <span class="num">3</span>) <span class="kw">continue</span>; <span class="cm">// skip 3, jump to i=4</span>
+    <span class="kw">if</span> (i == <span class="num">7</span>) <span class="kw">break</span>;    <span class="cm">// stop everything at 7</span>
+    <span class="cls">System</span>.out.<span class="fn">println</span>(i);  <span class="cm">// prints 0,1,2,4,5,6</span>
+}</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; change skip/stop values</div>
+      <div class="demo-row">
+        <div><label>continue when i =</label><input type="number" id="bc-skip" value="3" oninput="demoBreakCont()" /></div>
+        <div><label>break when i =</label><input type="number" id="bc-stop" value="6" oninput="demoBreakCont()" /></div>
+      </div>
+      <div class="iter-row" id="bc-iters"></div>
+      <div class="demo-out" id="bc-out"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="loops">
+  <div class="card-header"><span class="badge badge-loops">Loops</span><h3>while loop</h3></div>
+  <div class="card-body">
+    <p>A loop that keeps going as long as a condition is <code>true</code> — like saying "keep playing rounds while <code>lives &gt; 0</code>". Great when you don't know in advance how many times to loop. ⚠️ If the condition is always true, the loop runs forever (infinite loop)! Step through below to see the condition checked each round.</p>
+    <pre><code><span class="kw">int</span> lives = <span class="num">3</span>;
+
+<span class="cm">// keep going as long as this is true</span>
+<span class="kw">while</span> (lives &gt; <span class="num">0</span>) {
+    lives--;  <span class="cm">// remember to change the variable!</span>
+}             <span class="cm">// infinite loop if you forget this</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Step through it</div>
+      <div class="demo-row">
+        <div><label>start</label><input type="number" id="wh-s" value="1" oninput="whileInit()" /></div>
+        <div><label>limit (&lt;)</label><input type="number" id="wh-l" value="20" oninput="whileInit()" /></div>
+        <div><label>each step: n &times;</label><input type="number" id="wh-m" value="2" min="1" oninput="whileInit()" /></div>
+      </div>
+      <div class="loop-display">
+        <div class="loop-var">n&nbsp;=&nbsp;<span class="loop-var-val" id="wh-val">&mdash;</span></div>
+        <div class="loop-active" id="wh-cond">&mdash;</div>
+        <div class="loop-output" id="wh-output"></div>
+      </div>
+      <div class="demo-row" style="margin-top:8px">
+        <button class="demo-btn" onclick="whileStep()">&#9654; Next</button>
+        <button class="demo-btn secondary" onclick="whileInit()">Reset</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MATH ========== -->
+
+<div class="card" data-cat="math">
+  <div class="card-header"><span class="badge badge-math">Math</span><h3>Math.abs() / max() / min()</h3></div>
+  <div class="card-body">
+    <p>Three everyday helpers: <code>abs()</code> removes the sign (makes any negative number positive — think absolute value). <code>max()</code> picks whichever of two numbers is bigger. <code>min()</code> picks the smaller one. These show up constantly in score calculations and range checks.</p>
+    <pre><code><span class="cls">Math</span>.<span class="fn">abs</span>(-<span class="num">42</span>)       <span class="cm">// 42</span>
+<span class="cls">Math</span>.<span class="fn">max</span>(<span class="num">10</span>, <span class="num">25</span>)    <span class="cm">// 25</span>
+<span class="cls">Math</span>.<span class="fn">min</span>(<span class="num">10</span>, <span class="num">25</span>)    <span class="cm">// 10</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; change a and b</div>
+      <div class="demo-row">
+        <div><label>a</label><input type="number" id="amm-a" value="-42" oninput="demoAmm()" /></div>
+        <div><label>b</label><input type="number" id="amm-b" value="25" oninput="demoAmm()" /></div>
+      </div>
+      <div id="amm-out" style="margin-top:8px;display:flex;flex-direction:column;gap:5px;font-family:monospace;font-size:.83rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="math">
+  <div class="card-header"><span class="badge badge-math">Math</span><h3>Math.pow() &amp; Math.sqrt()</h3></div>
+  <div class="card-body">
+    <p><code>pow(base, exp)</code> raises a number to a power — like squaring it or cubing it. <code>sqrt(n)</code> finds the square root. Both always give back a decimal (<code>double</code>) even if the result is a whole number. Fun fact: <code>pow(2, 10)</code> = 1024 — that's how many bytes are in a kilobyte!</p>
+    <pre><code><span class="cls">Math</span>.<span class="fn">pow</span>(<span class="num">2</span>, <span class="num">10</span>)   <span class="cm">// 1024.0</span>
+<span class="cls">Math</span>.<span class="fn">sqrt</span>(<span class="num">144</span>)   <span class="cm">// 12.0</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it</div>
+      <div class="demo-row">
+        <div><label>base</label><input type="number" id="ps-b" value="2" oninput="demoPowSqrt()" /></div>
+        <div><label>exponent</label><input type="number" id="ps-e" value="10" oninput="demoPowSqrt()" /></div>
+      </div>
+      <label>sqrt of</label>
+      <input type="number" id="ps-sq" value="144" oninput="demoPowSqrt()" />
+      <div id="ps-out" style="margin-top:8px;display:flex;flex-direction:column;gap:5px;font-family:monospace;font-size:.83rem"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="math">
+  <div class="card-header"><span class="badge badge-math">Math</span><h3>Math.random() &mdash; dice</h3></div>
+  <div class="card-body">
+    <p>Gives you a random decimal between <code>0.0</code> and <code>1.0</code> (never reaches 1.0 exactly) every time you call it. To get a random whole number — like rolling a dice — multiply by how many sides and round down. Roll the dice below to see the formula in action each time!</p>
+    <pre><code><span class="kw">int</span> dice = (<span class="kw">int</span>)(<span class="cls">Math</span>.<span class="fn">random</span>() * <span class="num">6</span>) + <span class="num">1</span>;</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Roll it!</div>
+      <div class="demo-row">
+        <div><label>Sides on dice</label><input type="number" id="rnd-sides" value="6" min="2" max="20" /></div>
+        <button class="demo-btn" style="margin-top:18px" onclick="demoRoll()">&#127922; Roll!</button>
+      </div>
+      <div id="rnd-dice" class="dice-face">&mdash;</div>
+      <div class="demo-out" id="rnd-out" style="margin-top:6px"></div>
+      <div id="rnd-history" style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="math">
+  <div class="card-header"><span class="badge badge-math">Math</span><h3>floor() / ceil() / round()</h3></div>
+  <div class="card-body">
+    <p><code>floor()</code> always rounds <em>down</em> to the nearest whole number (even for negatives). <code>ceil()</code> always rounds <em>up</em>. <code>round()</code> rounds to whichever whole number is closest (standard rounding). Drag the slider to move the dot on the number line and watch all three results change at once!</p>
+    <pre><code><span class="cls">Math</span>.<span class="fn">floor</span>(<span class="num">3.7</span>) <span class="cm">// 3.0 &larr; rounds down</span>
+<span class="cls">Math</span>.<span class="fn">ceil</span>(<span class="num">3.2</span>)  <span class="cm">// 4.0 &larr; rounds up</span>
+<span class="cls">Math</span>.<span class="fn">round</span>(<span class="num">3.5</span>) <span class="cm">// 4   &larr; standard</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; drag the slider</div>
+      <label id="fcr-lbl">Value: 3.7</label>
+      <input type="range" id="fcr-slider" min="-4" max="4" step="0.1" value="3.7" oninput="demoFcr()" />
+      <div id="fcr-nl" class="number-line"></div>
+      <div id="fcr-out" style="margin-top:10px;display:flex;flex-direction:column;gap:5px;font-family:monospace;font-size:.83rem"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== OOP ========== -->
+
+<div class="card" data-cat="oop">
+  <div class="card-header"><span class="badge badge-oop">OOP</span><h3>Classes &amp; Objects</h3></div>
+  <div class="card-body">
+    <p>A <strong>class</strong> is like a cookie cutter — it defines the shape and contents. An <strong>object</strong> is an actual cookie made from that cutter. You create objects with <code>new ClassName()</code>. Each object gets its own copy of the data (<em>fields</em>), and you can tell it to do things (<em>methods</em>). Fill in the fields below and click <code>bark()</code>!</p>
+    <pre><code><span class="cm">// 1. Define the class (the blueprint)</span>
+<span class="kw">class</span> <span class="cls">Dog</span> {
+    <span class="type">String</span> name;           <span class="cm">// field: each Dog has a name</span>
+    <span class="kw">int</span>    age;            <span class="cm">// field: and an age</span>
+    <span class="kw">void</span> <span class="fn">bark</span>() {          <span class="cm">// method: something the Dog can DO</span>
+        <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="str">"Woof!"</span>);
+    }
+}
+
+<span class="cm">// 2. Create an object from the blueprint</span>
+<span class="cls">Dog</span> myDog = <span class="kw">new</span> <span class="cls">Dog</span>();
+myDog.name = <span class="str">"Rex"</span>;
+myDog.<span class="fn">bark</span>();              <span class="cm">// calls the method → Woof!</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; instantiate a Dog object</div>
+      <div class="demo-row">
+        <div><label>name</label><input type="text" id="dog-name" value="Rex" oninput="demoDog()" /></div>
+        <div><label>age</label><input type="number" id="dog-age" value="3" oninput="demoDog()" /></div>
+      </div>
+      <div class="obj-card" id="dog-obj"></div>
+      <button class="demo-btn" style="margin-top:8px" onclick="dogBark()">dog.bark()</button>
+      <div class="demo-out" id="dog-out" style="margin-top:6px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="oop">
+  <div class="card-header"><span class="badge badge-oop">OOP</span><h3>Inheritance</h3></div>
+  <div class="card-body">
+    <p><strong>Inheritance</strong> lets one class borrow all the code from another class, then customize parts of it. A <code>Dog</code> can inherit from <code>Animal</code> and override <code>speak()</code> to say "Woof!" instead of a generic sound. The same method name does completely different things depending on which class you're calling it on — click each animal to see this in action!</p>
+    <pre><code><span class="kw">class</span> <span class="cls">Animal</span> {
+    <span class="kw">void</span> <span class="fn">speak</span>() { <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="str">"..."</span>); }
+}
+
+<span class="cm">// Dog inherits from Animal, then overrides speak()</span>
+<span class="kw">class</span> <span class="cls">Dog</span> <span class="kw">extends</span> <span class="cls">Animal</span> {
+    <span class="ann">@Override</span>              <span class="cm">// this replaces the parent version</span>
+    <span class="kw">void</span> <span class="fn">speak</span>() { <span class="cls">System</span>.out.<span class="fn">println</span>(<span class="str">"Woof!"</span>); }
+}</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; click an animal to call speak()</div>
+      <div class="class-tree">
+        <div class="ct-node">Animal</div>
+        <div class="ct-arrow">&#9660; extends</div>
+        <div class="ct-row">
+          <button class="demo-btn secondary" onclick="animalSpeak('Cat','Whiskers','Meow!')">&#128049; Cat</button>
+          <button class="demo-btn secondary" onclick="animalSpeak('Dog','Rex','Woof!')">&#128054; Dog</button>
+          <button class="demo-btn secondary" onclick="animalSpeak('Bird','Tweety','Tweet!')">&#128038; Bird</button>
+        </div>
+      </div>
+      <div class="demo-out" id="inh-out" style="margin-top:10px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="oop">
+  <div class="card-header"><span class="badge badge-oop">OOP</span><h3>Interfaces</h3></div>
+  <div class="card-body">
+    <p>An <strong>interface</strong> is a promise — it says "any class that signs up MUST provide these methods". Think of it like a job description: the interface lists the duties; the class is the employee who actually does them. A class can "sign up" for multiple interfaces at once (unlike inheritance, which allows only one parent).</p>
+    <pre><code><span class="kw">interface</span> <span class="cls">Drawable</span>  { <span class="kw">void</span> <span class="fn">draw</span>(); }
+<span class="kw">interface</span> <span class="cls">Resizable</span> { <span class="kw">void</span> <span class="fn">resize</span>(<span class="kw">double</span> f); }
+<span class="kw">class</span> <span class="cls">Circle</span> <span class="kw">implements</span> <span class="cls">Drawable</span>, <span class="cls">Resizable</span> {&hellip;}</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it</div>
+      <div class="class-tree">
+        <div class="ct-row">
+          <div class="ct-node interface">&laquo;interface&raquo; Drawable</div>
+          <div class="ct-node interface">&laquo;interface&raquo; Resizable</div>
+        </div>
+        <div class="ct-arrow">&#9660; implements both</div>
+        <div class="ct-node">Circle</div>
+      </div>
+      <div class="demo-row" style="margin-top:10px">
+        <div><label>radius</label><input type="number" id="ci-r" value="5" oninput="demoCircle()" /></div>
+        <div><label>resize factor</label><input type="number" id="ci-f" value="2" step="0.1" oninput="demoCircle()" /></div>
+      </div>
+      <div class="demo-row" style="margin-top:8px">
+        <button class="demo-btn" onclick="circleAction('draw')">draw()</button>
+        <button class="demo-btn secondary" onclick="circleAction('resize')">resize(factor)</button>
+      </div>
+      <div class="demo-out" id="ci-out" style="margin-top:8px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== COLLECTIONS ========== -->
+
+<div class="card" data-cat="collections">
+  <div class="card-header"><span class="badge badge-collections">Collections</span><h3>ArrayList</h3></div>
+  <div class="card-body">
+    <p><code>ArrayList</code> is like a regular array but it can grow and shrink automatically — you never need to decide the size upfront. Add items with <code>add()</code>, remove with <code>remove()</code>, and check how many items there are with <code>size()</code>. It's the most commonly used collection in Java by far!</p>
+    <pre><code><span class="cm">// &lt;String&gt; means this list holds Strings</span>
+<span class="cls">ArrayList</span>&lt;<span class="type">String</span>&gt; names = <span class="kw">new</span> <span class="cls">ArrayList</span>&lt;&gt;();
+names.<span class="fn">add</span>(<span class="str">"Alice"</span>);    <span class="cm">// add to the end</span>
+names.<span class="fn">add</span>(<span class="str">"Bob"</span>);
+names.<span class="fn">size</span>();          <span class="cm">// → 2</span>
+names.<span class="fn">remove</span>(<span class="str">"Alice"</span>); <span class="cm">// now size() → 1</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; add items, click &times; to remove</div>
+      <div class="demo-row">
+        <input type="text" id="al-in" placeholder="Type and press Add&hellip;" onkeydown="if(event.key==='Enter')alAdd()" />
+        <button class="demo-btn" onclick="alAdd()">add()</button>
+      </div>
+      <div id="al-list" style="margin-top:8px;display:flex;flex-direction:column;gap:4px"></div>
+      <div class="demo-out" id="al-out" style="margin-top:6px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="collections">
+  <div class="card-header"><span class="badge badge-collections">Collections</span><h3>HashMap</h3></div>
+  <div class="card-body">
+    <p><code>HashMap</code> stores pairs of <em>keys</em> and <em>values</em> — like a phone book where the name is the key and the number is the value. You look up values by their key (not by position). ⚠️ If you add the same key twice, the new value replaces the old one. Looking up a key that doesn't exist returns <code>null</code>.</p>
+    <pre><code><span class="cls">HashMap</span>&lt;<span class="type">String</span>,<span class="type">Integer</span>&gt; map = <span class="kw">new</span> <span class="cls">HashMap</span>&lt;&gt;();
+map.<span class="fn">put</span>(<span class="str">"Alice"</span>, <span class="num">95</span>);
+map.<span class="fn">get</span>(<span class="str">"Alice"</span>); <span class="cm">// 95</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; put &amp; get</div>
+      <div class="demo-row">
+        <div><label>key</label><input type="text" id="hm-k" value="Alice" /></div>
+        <div><label>value</label><input type="text" id="hm-v" value="95" /></div>
+        <button class="demo-btn" style="margin-top:18px" onclick="hmPut()">put()</button>
+      </div>
+      <div id="hm-pairs" style="margin-top:8px"></div>
+      <div class="demo-row" style="margin-top:8px">
+        <input type="text" id="hm-getk" placeholder="Key to look up&hellip;" />
+        <button class="demo-btn secondary" onclick="hmGet()">get()</button>
+      </div>
+      <div class="demo-out" id="hm-out" style="margin-top:6px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="collections">
+  <div class="card-header"><span class="badge badge-collections">Collections</span><h3>HashSet &mdash; unique only</h3></div>
+  <div class="card-body">
+    <p><code>HashSet</code> is a collection that refuses duplicates — every item must be unique. If you try to add something that's already there, it's silently ignored (no crash, no error). Perfect for tracking things like "which users have already voted" or "which words appear in this document". Try adding a duplicate below!</p>
+    <pre><code><span class="cls">HashSet</span>&lt;<span class="type">String</span>&gt; set = <span class="kw">new</span> <span class="cls">HashSet</span>&lt;&gt;();
+set.<span class="fn">add</span>(<span class="str">"red"</span>);
+set.<span class="fn">add</span>(<span class="str">"red"</span>); <span class="cm">// ignored!</span></code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; add a duplicate to see rejection</div>
+      <div class="demo-row">
+        <input type="text" id="hs-in" placeholder="Value to add&hellip;" onkeydown="if(event.key==='Enter')hsAdd()" />
+        <button class="demo-btn" onclick="hsAdd()">add()</button>
+      </div>
+      <div id="hs-pairs" style="margin-top:8px"></div>
+      <div class="demo-out" id="hs-out" style="margin-top:6px"></div>
+    </div>
+  </div>
+</div>
+
+<div class="card" data-cat="collections">
+  <div class="card-header"><span class="badge badge-collections">Collections</span><h3>Collections.sort() &amp; reverse()</h3></div>
+  <div class="card-body">
+    <p>The <code>Collections</code> class has ready-made tools that work on any list — you don't have to write these yourself! <code>sort()</code> puts items in order, <code>reverse()</code> flips the whole list around, <code>shuffle()</code> puts them in a random order. Hit Shuffle first, then Sort to watch the boxes snap back into place!</p>
+    <pre><code><span class="cls">Collections</span>.<span class="fn">sort</span>(list);
+<span class="cls">Collections</span>.<span class="fn">reverse</span>(list);</code><button class="copy-btn" onclick="copyCode(this)">Copy</button></pre>
+    <div class="demo">
+      <div class="demo-title">Try it &mdash; Shuffle then Sort</div>
+      <label>List values</label>
+      <input type="text" id="cs-in" value="3, 1, 4, 1, 5, 9, 2, 6" oninput="csInit()" />
+      <div class="arr-row" id="cs-boxes"></div>
+      <div class="demo-row" style="margin-top:10px">
+        <button class="demo-btn" onclick="csSort()">sort()</button>
+        <button class="demo-btn secondary" onclick="csReverse()">reverse()</button>
+        <button class="demo-btn secondary" onclick="csShuffle()">Shuffle</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="empty-state" id="empty">No functions match your search.</div>
+</div>
+
+<footer><p>Built with vanilla HTML/CSS/JS &mdash; edit any input, results update instantly &nbsp;&#9749;</p></footer>
+
+<script>
+// Filter
+let activeTab='all';
+function setTab(cat,btn){activeTab=cat;document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filterCards();}
+function filterCards(){const q=document.getElementById('search').value.toLowerCase();let v=0;document.querySelectorAll('.card').forEach(c=>{const m=(activeTab==='all'||c.dataset.cat===activeTab)&&c.innerText.toLowerCase().includes(q);c.classList.toggle('hidden',!m);if(m)v++;});document.getElementById('empty').classList.toggle('visible',v===0);}
+
+// Copy
+function copyCode(btn){const text=btn.closest('pre').innerText.replace(/Copy|Copied!/g,'').trim();navigator.clipboard.writeText(text).then(()=>{btn.textContent='Copied!';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},1500);});}
+
+// Helpers
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function charBoxes(el,chars,hlFn){el.innerHTML='';chars.forEach((ch,i)=>{const b=document.createElement('div');b.className='char-box '+(hlFn?hlFn(ch,i):'');b.innerHTML=`<span class="ch">${ch===' '?'&#9251;':esc(ch)}</span><span class="idx">${i}</span>`;el.appendChild(b);});}
+function arrBoxes(el,vals,hlFn){el.innerHTML='';vals.forEach((v,i)=>{const b=document.createElement('div');b.className='arr-box '+(hlFn?hlFn(v,i):'');b.innerHTML=`<span class="val">${esc(v)}</span><span class="idx">[${i}]</span>`;el.appendChild(b);});}
+function parseArr(id){return document.getElementById(id).value.split(',').map(s=>s.trim()).filter(Boolean);}
+
+// === STRINGS ===
+function demoLength(){const s=document.getElementById('len-in').value;charBoxes(document.getElementById('len-boxes'),[...s],()=>'');document.getElementById('len-out').textContent='"'+s+'".length() \u2192 '+s.length;}
+demoLength();
+
+function demoCase(){const s=document.getElementById('case-in').value,up=s.toUpperCase(),lo=s.toLowerCase();charBoxes(document.getElementById('case-upper'),[...up],(ch,i)=>ch!=[...s][i]?'changed':'');charBoxes(document.getElementById('case-lower'),[...lo],(ch,i)=>ch!=[...s][i]?'changed':'');}
+demoCase();
+
+function demoSub(){const s=document.getElementById('sub-str').value;let a=parseInt(document.getElementById('sub-s').value)||0,b=parseInt(document.getElementById('sub-e').value);if(isNaN(b)||b===-1)b=s.length;a=Math.max(0,Math.min(a,s.length));b=Math.max(0,Math.min(b,s.length));charBoxes(document.getElementById('sub-boxes'),[...s],(ch,i)=>(i>=a&&i<b)?'hl':'');try{const r=b===s.length?s.substring(a):s.substring(a,b);document.getElementById('sub-out').textContent='"'+s+'".substring('+a+(b!==s.length?', '+b:'')+')\n\u2192 "'+r+'"';}catch(e){document.getElementById('sub-out').textContent='Invalid indices';}}
+demoSub();
+
+function demoCse(){const s=document.getElementById('cse-str').value,q=document.getElementById('cse-q').value,idx=s.indexOf(q);charBoxes(document.getElementById('cse-boxes'),[...s],(ch,i)=>(idx>=0&&i>=idx&&i<idx+q.length)?'match':'');const checks=[['contains("'+q+'")',s.includes(q)],['startsWith("'+q+'")',s.startsWith(q)],['endsWith("'+q+'")',s.endsWith(q)]];document.getElementById('cse-results').innerHTML=checks.map(([fn,v])=>`<div style="display:flex;align-items:center;gap:6px;font-size:.78rem;font-family:monospace"><span style="color:var(--muted)">.${fn}</span><span class="badge-${v?'true':'false'}">${v}</span></div>`).join('');}
+demoCse();
+
+function demoReplace(){const s=document.getElementById('rep-str').value,find=document.getElementById('rep-find').value,rep=document.getElementById('rep-with').value;const boxes=document.getElementById('rep-boxes');if(!find){charBoxes(boxes,[...s],()=>'');document.getElementById('rep-out').textContent='';return;}const matchSet=new Set();let pos=0;while((pos=s.indexOf(find,pos))!==-1){for(let k=0;k<find.length;k++)matchSet.add(pos+k);pos+=find.length;}charBoxes(boxes,[...s],(ch,i)=>matchSet.has(i)?'changed':'');document.getElementById('rep-out').textContent='Result: "'+s.split(find).join(rep)+'"';}
+demoReplace();
+
+function demoSplit(){const s=document.getElementById('spl-str').value,d=document.getElementById('spl-del').value,out=document.getElementById('spl-out');if(!d){out.innerHTML='';return;}out.innerHTML=s.split(d).map((t,i)=>`<div class="chip"><span class="chip-i">[${i}]</span>${esc(t)}</div>`).join('');}
+demoSplit();
+
+function demoTrim(){const s=document.getElementById('trim-in').value,sStart=s.length-s.trimStart().length,sEnd=s.length-s.trimEnd().length;charBoxes(document.getElementById('trim-orig'),[...s],(ch,i)=>{if(ch===' '){return (i<sStart||(sEnd>0&&i>=s.length-sEnd))?'space trimmed':'space';}return '';});charBoxes(document.getElementById('trim-after'),[...s.trim()],()=>'');}
+demoTrim();
+
+function demoEquals(){const a=document.getElementById('eq-a').value,b=document.getElementById('eq-b').value,eq=a===b,eqi=a.toLowerCase()===b.toLowerCase();document.getElementById('eq-results').innerHTML=`<div style="display:flex;align-items:center;gap:6px;font-size:.8rem;font-family:monospace"><span style="color:var(--muted)">a.equals(b)</span><span class="badge-${eq?'true':'false'}">${eq}</span></div><div style="display:flex;align-items:center;gap:6px;font-size:.8rem;font-family:monospace"><span style="color:var(--muted)">a.equalsIgnoreCase(b)</span><span class="badge-${eqi?'true':'false'}">${eqi}</span></div><div style="display:flex;align-items:center;gap:6px;font-size:.8rem;font-family:monospace"><span style="color:var(--muted)">a&nbsp;==&nbsp;b (object ref)</span><span class="badge-false">false (always)</span></div>`;}
+demoEquals();
+
+// === ARRAYS ===
+function demoArr(){const vals=parseArr('arr-in'),idx=parseInt(document.getElementById('arr-idx').value);arrBoxes(document.getElementById('arr-boxes'),vals,(v,i)=>i===idx?'hl':'');const out=document.getElementById('arr-out');if(idx>=0&&idx<vals.length)out.textContent='arr['+idx+'] = "'+vals[idx]+'"   |   arr.length = '+vals.length;else out.textContent='Index '+idx+' out of bounds! Length = '+vals.length;}
+demoArr();
+
+let sortArr=[];
+function demoSortInit(){sortArr=parseArr('sort-in');arrBoxes(document.getElementById('sort-boxes'),sortArr,()=>'');}
+function demoSortRun(){sortArr=[...sortArr].sort((a,b)=>isNaN(a)||isNaN(b)?String(a).localeCompare(String(b)):Number(a)-Number(b));arrBoxes(document.getElementById('sort-boxes'),sortArr,()=>'hl');}
+function demoSortShuffle(){sortArr=parseArr('sort-in');arrBoxes(document.getElementById('sort-boxes'),sortArr,()=>'');}
+demoSortInit();
+
+function demoCopy(){const vals=parseArr('cop-arr');const s=Math.max(0,parseInt(document.getElementById('cop-s').value)||0);const e=Math.min(vals.length,parseInt(document.getElementById('cop-e').value)||vals.length);arrBoxes(document.getElementById('cop-orig'),vals,(v,i)=>(i>=s&&i<e)?'hl2':'');arrBoxes(document.getElementById('cop-copy'),vals.slice(s,e),()=>'hl');}
+demoCopy();
+
+function demoFill(){const len=Math.min(12,Math.max(1,parseInt(document.getElementById('fil-len').value)||6));const val=document.getElementById('fil-val').value;const s=parseInt(document.getElementById('fil-s').value)||0;const e=parseInt(document.getElementById('fil-e').value);const arr=Array.from({length:len},(_,i)=>(e===-1||(i>=s&&i<e))?val:'0');arrBoxes(document.getElementById('fil-boxes'),arr,(v)=>v===val?'filled':'');}
+demoFill();
+
+// === LOOPS ===
+let flState=null;
+function forLoopInit(){const s=parseInt(document.getElementById('fl-s').value)||0,e=parseInt(document.getElementById('fl-e').value)||0,st=Math.max(1,parseInt(document.getElementById('fl-st').value)||1);flState={s,e,st,cur:null,output:[]};const iters=[];for(let i=s;i<e;i+=st)iters.push(i);document.getElementById('fl-iters').innerHTML=iters.map(i=>`<div class="iter-box" id="fl-b-${i}">${i}</div>`).join('');document.getElementById('fl-ival').textContent='\u2014';document.getElementById('fl-status').textContent='Press Next to start';document.getElementById('fl-output').textContent='';document.getElementById('fl-next').disabled=false;}
+function forLoopStep(){if(!flState)return;const{s,e,st}=flState;const next=flState.cur===null?s:flState.cur+st;if(next>=e){document.getElementById('fl-status').textContent='\u2713 Loop finished';document.getElementById('fl-next').disabled=true;return;}if(flState.cur!==null){const p=document.getElementById('fl-b-'+flState.cur);if(p)p.className='iter-box done';}flState.cur=next;const cur=document.getElementById('fl-b-'+next);if(cur)cur.className='iter-box current';document.getElementById('fl-ival').textContent=next;document.getElementById('fl-status').textContent='Condition: '+next+' < '+e+' \u2192 true';flState.output.push(next);document.getElementById('fl-output').textContent='Output: '+flState.output.join(' ');}
+forLoopInit();
+
+let feState=null;
+function feInit(){const items=parseArr('fe-arr');feState={items,cur:-1};arrBoxes(document.getElementById('fe-boxes'),items,()=>'');document.getElementById('fe-val').textContent='\u2014';document.getElementById('fe-output').textContent='';}
+function feStep(){if(!feState)return;const{items}=feState;if(feState.cur>=0){const p=document.getElementById('fe-boxes').children[feState.cur];if(p)p.className='arr-box done';}feState.cur++;if(feState.cur>=items.length){document.getElementById('fe-val').textContent='\u2014 (done)';return;}const box=document.getElementById('fe-boxes').children[feState.cur];if(box)box.className='arr-box hl2';document.getElementById('fe-val').textContent='"'+items[feState.cur]+'"';const prev=document.getElementById('fe-output').textContent;document.getElementById('fe-output').textContent=prev+(prev?'\n':'')+'println("'+items[feState.cur]+'")';}
+feInit();
+
+function demoBreakCont(){const skip=parseInt(document.getElementById('bc-skip').value),stop=parseInt(document.getElementById('bc-stop').value);const row=document.getElementById('bc-iters');row.innerHTML='';const out=[];for(let i=0;i<10;i++){const box=document.createElement('div');if(i===stop){box.className='iter-box';box.style.opacity='.3';box.title='break here';box.textContent=i;row.appendChild(box);break;}if(i===skip){box.className='iter-box skipped';}else{box.className='iter-box done';out.push(i);}box.textContent=i;row.appendChild(box);}document.getElementById('bc-out').textContent='Output: '+out.join(' ');}
+demoBreakCont();
+
+let whState=null;
+function whileInit(){const s=parseFloat(document.getElementById('wh-s').value)||1,l=parseFloat(document.getElementById('wh-l').value)||20,m=parseFloat(document.getElementById('wh-m').value)||2;whState={cur:null,s,l,m,output:[]};document.getElementById('wh-val').textContent='\u2014';document.getElementById('wh-cond').textContent='Press Next to start';document.getElementById('wh-output').textContent='';}
+function whileStep(){if(!whState)return;const{s,l,m}=whState;const next=whState.cur===null?s:whState.cur*m;if(next>=l){document.getElementById('wh-cond').textContent=next+' < '+l+' \u2192 false \u2014 loop ends';return;}whState.cur=next;document.getElementById('wh-val').textContent=next;document.getElementById('wh-cond').textContent=next+' < '+l+' \u2192 true \u2014 continue';whState.output.push(next);document.getElementById('wh-output').textContent='Output: '+whState.output.join(' ');}
+whileInit();
+
+// === MATH ===
+function demoAmm(){const a=parseFloat(document.getElementById('amm-a').value)||0,b=parseFloat(document.getElementById('amm-b').value)||0;document.getElementById('amm-out').innerHTML=[['Math.abs('+a+')',Math.abs(a),'var(--pink)'],['Math.max('+a+', '+b+')',Math.max(a,b),'var(--green)'],['Math.min('+a+', '+b+')',Math.min(a,b),'var(--accent2)']].map(([fn,v,c])=>`<div style="display:flex;justify-content:space-between;padding:4px 8px;background:#1a1d27;border-radius:5px"><span style="color:var(--muted)">${fn}</span><span style="color:${c};font-weight:700">\u2192 ${v}</span></div>`).join('');}
+demoAmm();
+
+function demoPowSqrt(){const b=parseFloat(document.getElementById('ps-b').value)||0,e=parseFloat(document.getElementById('ps-e').value)||0,sq=parseFloat(document.getElementById('ps-sq').value)||0,pw=Math.pow(b,e),rt=Math.sqrt(sq);document.getElementById('ps-out').innerHTML=[['Math.pow('+b+', '+e+')',isFinite(pw)?+pw.toPrecision(8):'&#8734;','var(--yellow)'],['Math.sqrt('+sq+')',isNaN(rt)?'NaN (negative)':+rt.toPrecision(6),'var(--pink)']].map(([fn,v,c])=>`<div style="display:flex;justify-content:space-between;padding:4px 8px;background:#1a1d27;border-radius:5px"><span style="color:var(--muted)">${fn}</span><span style="color:${c};font-weight:700">\u2192 ${v}</span></div>`).join('');}
+demoPowSqrt();
+
+const diceFaces=['&#8212;','&#9856;','&#9857;','&#9858;','&#9859;','&#9860;','&#9861;'];
+let rollHistory=[];
+function demoRoll(){const sides=Math.max(2,parseInt(document.getElementById('rnd-sides').value)||6);const raw=Math.random();const roll=Math.floor(raw*sides)+1;const diceEl=document.getElementById('rnd-dice');diceEl.innerHTML=sides<=6?(diceFaces[roll]||roll):roll;document.getElementById('rnd-out').textContent='Math.random() \u2192 '+raw.toFixed(6)+'\n(int)('+raw.toFixed(4)+' * '+sides+') + 1 = '+roll;rollHistory.push(roll);if(rollHistory.length>20)rollHistory.shift();document.getElementById('rnd-history').innerHTML=rollHistory.map(r=>`<span style="background:#1a1d27;border:1px solid var(--border);border-radius:4px;padding:2px 6px;font-family:monospace;font-size:.75rem;color:var(--muted)">${r}</span>`).join('');}
+
+function demoFcr(){const v=parseFloat(document.getElementById('fcr-slider').value);document.getElementById('fcr-lbl').textContent='Value: '+v.toFixed(1);const fl=Math.floor(v),ce=Math.ceil(v),ro=Math.round(v);document.getElementById('fcr-out').innerHTML=[['Math.floor('+v+')',fl,'var(--blue)'],['Math.ceil('+v+')',ce,'var(--pink)'],['Math.round('+v+')',ro,'var(--yellow)']].map(([fn,res,c])=>`<div style="display:flex;justify-content:space-between;padding:4px 8px;background:#1a1d27;border-radius:5px"><span style="color:var(--muted)">${fn}</span><span style="color:${c};font-weight:700">\u2192 ${res}</span></div>`).join('');const min=-4,max=4,range=max-min,pct=x=>((x-min)/range*100).toFixed(2)+'%';let ticks='';for(let i=min;i<=max;i++)ticks+=`<div class="nl-tick" style="left:${pct(i)}"><div class="nl-label">${i}</div></div>`;document.getElementById('fcr-nl').innerHTML=`<div class="nl-track"></div>${ticks}<div class="nl-dot" style="left:${pct(v)}"></div><div class="nl-result-dot" style="left:${pct(fl)};background:var(--blue);width:8px;height:8px;top:30%"></div><div class="nl-result-dot" style="left:${pct(ce)};background:var(--pink);width:8px;height:8px;top:70%"></div>`;}
+demoFcr();
+
+// === OOP ===
+function demoDog(){const name=document.getElementById('dog-name').value||'?',age=document.getElementById('dog-age').value||'?';document.getElementById('dog-obj').innerHTML=`<div class="obj-title">Dog object</div><div class="obj-field"><span class="obj-field-name">name</span><span class="obj-field-value">"${esc(name)}"</span></div><div class="obj-field"><span class="obj-field-name">age</span><span class="obj-field-value">${esc(age)}</span></div>`;}
+function dogBark(){const name=document.getElementById('dog-name').value||'?';document.getElementById('dog-obj').classList.add('created');document.getElementById('dog-out').textContent=name+': Woof! \uD83D\uDC36';}
+demoDog();
+
+function animalSpeak(type,name,sound){document.getElementById('inh-out').textContent='new '+type+'("'+name+'").speak()\n\u2192 "'+name+': '+sound+'"';}
+
+function demoCircle(){}
+function circleAction(action){const r=parseFloat(document.getElementById('ci-r').value)||1,f=parseFloat(document.getElementById('ci-f').value)||1,out=document.getElementById('ci-out');if(action==='draw'){out.textContent='draw() \u2192 "Drawing circle r='+r+'"\nArea = \u03C0\u00B7'+r+'\u00B2 = '+(Math.PI*r*r).toFixed(2);}else{const nr=(r*f).toFixed(2);document.getElementById('ci-r').value=nr;out.textContent='resize('+f+') \u2192 radius: '+r+' \u2192 '+nr;}}
+
+// === COLLECTIONS ===
+let alItems=['Alice','Bob','Carol'];
+function alRender(){document.getElementById('al-list').innerHTML=alItems.map((item,i)=>`<div class="kv-pair" id="ali-${i}"><span class="kv-key">[${i}]</span><span class="kv-arrow">\u2192</span><span class="kv-val">"${esc(item)}"</span><button class="kv-rm" onclick="alRemove(${i})">&#215;</button></div>`).join('');document.getElementById('al-out').textContent='size() = '+alItems.length;}
+function alAdd(){const v=document.getElementById('al-in').value.trim();if(!v)return;alItems.push(v);document.getElementById('al-in').value='';alRender();}
+function alRemove(i){alItems.splice(i,1);alRender();}
+alRender();
+
+let hmMap={Alice:95,Bob:87};
+function hmRender(){document.getElementById('hm-pairs').innerHTML=Object.entries(hmMap).map(([k,v])=>`<div class="kv-pair"><span class="kv-key">"${esc(k)}"</span><span class="kv-arrow">\u2192</span><span class="kv-val">${esc(String(v))}</span><button class="kv-rm" onclick="hmDel('${k.replace(/'/g,"\\'")}')">&#215;</button></div>`).join('');}
+function hmPut(){const k=document.getElementById('hm-k').value.trim(),v=document.getElementById('hm-v').value.trim();if(!k)return;hmMap[k]=v;hmRender();document.getElementById('hm-out').textContent='put("'+k+'", "'+v+'") \u2192 stored';}
+function hmGet(){const k=document.getElementById('hm-getk').value.trim(),out=document.getElementById('hm-out');if(k in hmMap)out.textContent='get("'+k+'") \u2192 "'+hmMap[k]+'"';else out.textContent='get("'+k+'") \u2192 null\ngetOrDefault("'+k+'", 0) \u2192 0';}
+function hmDel(k){delete hmMap[k];hmRender();}
+hmRender();
+
+let hsSet=new Set(['red','blue']);
+function hsRender(){document.getElementById('hs-pairs').innerHTML=[...hsSet].map(v=>`<div class="kv-pair" id="hs-${v}"><span class="kv-val">"${esc(v)}"</span><button class="kv-rm" onclick="hsDel('${v.replace(/'/g,"\\'")}')">&#215;</button></div>`).join('');}
+function hsAdd(){const v=document.getElementById('hs-in').value.trim();if(!v)return;const out=document.getElementById('hs-out');if(hsSet.has(v)){out.textContent='add("'+v+'") \u2192 false (duplicate, ignored)';const pairs=[...document.getElementById('hs-pairs').querySelectorAll('.kv-pair')];pairs.forEach(p=>{if(p.textContent.includes(v)){p.classList.add('dup-item');setTimeout(()=>p.classList.remove('dup-item'),400);}});}else{hsSet.add(v);out.textContent='add("'+v+'") \u2192 true';hsRender();}document.getElementById('hs-in').value='';}
+function hsDel(v){hsSet.delete(v);hsRender();}
+hsRender();
+
+let csArr=[];
+function csInit(){csArr=parseArr('cs-in');arrBoxes(document.getElementById('cs-boxes'),csArr,()=>'');}
+function csSort(){csArr=[...csArr].sort((a,b)=>isNaN(a)||isNaN(b)?String(a).localeCompare(String(b)):Number(a)-Number(b));arrBoxes(document.getElementById('cs-boxes'),csArr,()=>'hl');}
+function csReverse(){csArr=[...csArr].reverse();arrBoxes(document.getElementById('cs-boxes'),csArr,()=>'hl2');}
+function csShuffle(){csArr=parseArr('cs-in');for(let i=csArr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[csArr[i],csArr[j]]=[csArr[j],csArr[i]];}arrBoxes(document.getElementById('cs-boxes'),csArr,()=>'');}
+csInit();
+</script>
+</body>
+</html>
